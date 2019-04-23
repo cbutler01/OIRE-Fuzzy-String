@@ -21,6 +21,7 @@ def launch():
     print("https://github.com/JdoubleG/OIRE-Fuzzy-String for documentation.\n")
     print("'si' = 'Significant Impact'  'bc' = 'Best Course'\n")
     mode = input("Mode code:  ")
+    # loop to ensure input is valid
     loop = True
     while loop == True:
         if mode == "si":
@@ -50,7 +51,35 @@ def significantImpact():
         print("\nERROR: Data sheet could not be opened! Ensure that it is correcty named 'RAW'")
         print("before attempting to run the script again.")
         exit()
-    # do fuzzy string stuff
+    
+    ## fuzzy comparisons of names
+    # the threshold for counting a word as similar after passing it into the
+    # FuzzyWuzzy algorithm.
+    name_thresh = 90
+    row_index = 0
+    while row_index <= ws.max_row:
+        # a dictionary of names appearing in the file similar to each other
+        names = {}
+        # starting index of the new grouping of names
+        i = row_index
+        while """element at row_index""" >= threshold:
+            if """element at row_index""" in names:
+                # if an instance of the name is already in the dictionary,
+                # update the value
+                names["""name value of element at row_index"""] = """itself""" + 1
+                # make sure the above syntax works
+            else:
+                # otherwise, add the instance of the name to the dictionary
+                 names.setdefault("""name value""": 1)
+            # update the row index
+            row_index = row_index + 1
+        """find the key with the max value"""
+        # for all elements with similar names, give them the same name (the one
+        # appearing most often)
+        for j in range(i, row_index):
+            """element at j """ = """best name"""
+    # end fuzzy string stuff
+
     ws.title = "OUTPUT"
     wb.save("si_output.xlsx")
     print("\n\nSurvey fuzzy string processing complete! File saved as 'si_output.xlsx\n")
@@ -70,6 +99,7 @@ def bestCourse():
         print("before attempting to run the script again.")
         exit()
     # do fuzzy string stuff
+    # end fuzzy string stuff
     ws.title = "OUTPUT"
     wb.save("bc_output.xlsx")
     print("\n\nSurvey fuzzy string processing complete! File saved as 'bc_output.xlsx\n")

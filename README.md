@@ -46,7 +46,7 @@ It is then important to make sure the Excel file is ready for the script.
      Best Course survey. There should be new empty columns in columns E and G.
 
 ## Running the Script
-Run the script with Python using the following syntax: `python FuzzyMatch.py`
+Run the script with Python using the following syntax: `python FuzzyMatch.py`.
 Note that on some systems you may need to replace `python` with `python3`.
 
 ## Expected Output
