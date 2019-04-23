@@ -23,9 +23,9 @@ It is then important to make sure the Excel file is ready for the script.
 1. Ensure that the survey's Excel file is in the same directory as the script.
 2. Ensure that the file is named appropriately.
    - If you are processing the Significant Impact survey data, the file must be
-     named "si_input.xlsx".
+     named `si_input.xlsx`.
    - If you are processing the Best Course survey data, the file must be named
-     "bc_input.xlsx".
+     `bc_input.xlsx`.
 3. Rename the sheet in the Excel file with the data needed by the script "RAW".
 4. Run a spell check on the appropriate columns:
    - For the Significant Impact survey, spell check the "Individual:-Department/
@@ -45,6 +45,17 @@ It is then important to make sure the Excel file is ready for the script.
    - This will be the "BC: Course Number" and "BC: Course Title" columns in the
      Best Course survey. There should be new empty columns in columns E and G.
 
+## Running the Script
+Run the script with Python using the following syntax: `python FuzzyMatch.py`
+Note that on some systems you may need to replace `python` with `python3`.
+
+## Expected Output
+When the script has finished running, you should expect to see a file named
+either `si_output.xlsx` or `bc_output.xlsx`, depending on which survey you
+processed. Regardless of the file name, the file should contain a sheet entitled
+"OUTPUT" in which the previously empty columns inserted by the user are filled
+with new values.
+
 ## Steps to Completion
 - [x] Outline the steps that must be taken before the Excel file is read by the
   script
@@ -52,3 +63,5 @@ It is then important to make sure the Excel file is ready for the script.
   select the survey mode ("Significant Impact" or "Best Course")
 - [ ] Implement the algorithm for processing the "Significant Impact" survey
 - [ ] Implement the algorithm for processing the "Best Course" survey
+- [x] Provide output acknowledging the completion of the script and outline the
+  expected output
