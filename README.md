@@ -5,12 +5,17 @@ A fuzzy string matching script for the Tufts OIRE's Significant Impact and Best
 Courses surveys.
 
 Written by:  James Garijo-Garde | 
-        for: The Tufts University Office of Institutional Research & Evaluation
-             (OIRE) |
+        for: The Tufts University Office of Institutional Research and
+             Evaluation (OIRE) |
         in:  April, 2019
 
-## Purpose of this Script
-... ...
+## Purpose of this Program
+This program is a command line script that automates a survey processing step
+for the
+[Tufts University Office of Institutional Research and Evaluation (OIRE)](https://provost.tufts.edu/institutionalresearch).
+This program processes the names and departments of individuals mentioned as
+having a significant impact on students and the course number and title of
+classes students mention as favorites during their time at Tufts.
 
 ## Steps before Running
 Before running this program, make sure you have
@@ -61,7 +66,18 @@ with new values.
   script
 - [x] Provide users with an initial informational launch and the option to
   select the survey mode ("Significant Impact" or "Best Course")
-- [ ] Implement the algorithm for processing the "Significant Impact" survey
+- [x] Implement the algorithm for processing the "Significant Impact" survey
 - [ ] Implement the algorithm for processing the "Best Course" survey
 - [x] Provide output acknowledging the completion of the script and outline the
   expected output
+- [ ] Debug and adjust fuzzy string thresholds
+
+## Next Steps
+This algorithm needs to be debugged, and edge cases must be considered! The
+current implementation does not use fuzzy string recognition for the department
+category in the Significant Impact survey. It might be a good idea to somehow
+include that as a means of including similar subject names that are not exactly
+the same as instances of the same subject, which would in theory lead to the
+algorithm being better at picking a value for that category. It would also be a
+good idea to modularize the code more than it is currently since the steps in
+each of the sections of the program are not overtly dissimilar.
