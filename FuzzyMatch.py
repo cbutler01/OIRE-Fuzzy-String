@@ -12,6 +12,7 @@
                  Evaluation (OIRE)
 """
 
+import copy
 from openpyxl import load_workbook
 from fuzzywuzzy import fuzz
 
@@ -71,41 +72,47 @@ def significantImpact():
     if nextName == None:
         nextName = "-99"
     # a dictionary of names appearing in the file similar to each other
-    names = {prevName: 1}
+    names = {}
+    if prevName != "-99":
+        names.setdefault(prevName, 1)
     row_index = 2
     while row_index <= end:
-        # 90 = threshold of minimum allowable similarity after passing it into
-        # the FuzzyWuzzy algorithm.
-        if fuzz.token_sort_ratio(prevName, nextName) >= 90:  # TEST THIS THRESHOLD!
-            if nextName in names:
-                # if an instance of the name is already in the dictionary,
-                # update the value
-                names[nextName] = names[nextName] + 1
+        if nextName != "-99":
+            # 90 = threshold of minimum allowable similarity after passing it
+            # into the FuzzyWuzzy token sort algorithm.
+            if fuzz.token_sort_ratio(prevName, nextName) >= 90:  # TEST THIS THRESHOLD!
+                if nextName in names:
+                    # if an instance of the name is already in the dictionary,
+                    # update the value
+                    names[nextName] = names[nextName] + 1
+                else:
+                    # otherwise, add the instance of the name to the dictionary
+                    names.setdefault(nextName, 1)
             else:
-                # otherwise, add the instance of the name to the dictionary
-                names.setdefault(nextName, 1)
+                # find the key with the max value (the one appearing most often
+                # in the data)
+                keys = list(names.keys())
+                if len(keys) > 1:
+                    topScore = 0
+                    bestName = ""
+                    for j in keys:
+                        if names[j] > topScore:
+                            topScore = names[j]
+                            bestName = j
+                else:
+                    bestName = prevName
+                # for all elements with similar names, give them the same name
+                for j in range(i, row_index + 1):
+                    # 4 = the column with the new names
+                    ws.cell(j, 4).value = bestName
+                # update the starting index of the new grouping of names
+                i = row_index + 1
+                # reset the names dictionary
+                names = {}
+                if prevName != "-99":
+                    names.setdefault(prevName, 1)
         else:
-            # find the key with the max value (the on appearing most often in
-            # the data)
-            keys = list(names.keys())
-            if len(keys) > 1:
-                topScore = 0
-                bestName = ""
-                for j in keys:
-                    # print("Loop 3")
-                    if names[j] > topScore:
-                        topScore = names[j]
-                        bestName = j
-            else:
-                bestName = prevName
-            # for all elements with similar names, give them the same name
-            for j in range(i, row_index + 1):
-                # 4 = the column with the new names
-                ws.cell(j, 4).value = bestName
-            # update the starting index of the new grouping of names
             i = row_index + 1
-            # reset the names dictionary
-            names = {nextName: 1}
         # update the row index
         row_index = row_index + 1
         prevName = str(ws.cell(row_index, 3).value)
@@ -115,8 +122,7 @@ def significantImpact():
         if nextName == None:
             nextName = "-99"
     
-    ## fuzzy comparison of department/subject
-    print("Subject")
+    ## non-fuzzy comparison of department/subject
     i = 2  # starting index of the new grouping of subjects
     prevSubject = str(ws.cell(2, 5).value)
     nextSubject = str(ws.cell(3, 5).value)
@@ -128,10 +134,9 @@ def significantImpact():
     subjects = {prevSubject: 1}
     row_index = 2
     while row_index <= end:
-        # 90 = threshold of minimum allowable similarity after passing it into
-        # the FuzzyWuzzy algorithm. The subject loop adds a check to make sure
-        # it is comparing the same person for whom the subject is associated.
-        if ws.cell(row_index, 4).value == ws.cell(row_index + 1, 4).value:  # TEST THIS THRESHOLD!
+        # The subject loop adds a check to make sure it is comparing the same
+        # person for whom the subject is associated.
+        if ws.cell(row_index, 4).value == ws.cell(row_index + 1, 4).value:
             if nextSubject in subjects:
                 # if an instance of the subject is already in the
                 # dictionary, update the value
@@ -194,7 +199,143 @@ def bestCourse():
         print("\nERROR: Data sheet could not be opened! Ensure that it is correctly named 'RAW'")
         print("before attempting to run the script again.")
         exit()
+    end = ws.max_row
     # do fuzzy string stuff
+
+    ## Format the course number in a standard way
+    for i in range(2, end + 1):
+        # 4 = the column with the existing course numbers
+        courseNum = str(ws.cell(i, 4).value)
+        if courseNum != "-99":
+            # capitalize all the letters in the course number
+            courseNum = courseNum.upper()
+            for j in range(len(courseNum)):
+                if courseNum[j].isalnum() == False:
+                    # if a character in the course number is neither a letter
+                    # nor a number, change it to a space
+                    courseNum = courseNum[:j] + ' ' + courseNum[(j + 1):]
+                elif courseNum[j] == '0':
+                    # remove all leading zeros from the course number
+                    k = copy.deepcopy(j)
+                    while courseNum[k + 1] == '0':
+                        k = k + 1
+                    courseNum = courseNum[:j] + courseNum[(k + 1):]
+                elif courseNum[j].isdigit() and j == 0:
+                    # if the course number does not have the subject code at the
+                    # beginning, get the subject code from the subject column
+                    subject = str(ws.cell(i, 3).value)
+                    # if the subject field is empty, don't do anything
+                    if subject != "-99":
+                        start = 0
+                        # parse out the subject code from the value in the
+                        # subject column
+                        for k in range(len(subject)):
+                            if subject[k] == '(':
+                                start = k + 1
+                                break
+                        subject = subject[start:(len(subject) - 1)] + ' '
+                        courseNum = subject + courseNum
+                        break
+                elif courseNum[j].isdigit() and courseNum[j-1].isalpha():
+                    # insert a space if the course number goes straight from
+                    # letters to numbers
+                    courseNum = courseNum[:j] + ' ' + courseNum[j:]
+                elif courseNum[j].isdigit():
+                    # if the jth element in the course number is a digit,
+                    # processing is complete
+                    break
+        # 5 = the column with the new course numbers
+        ws.cell(i, 5).value = courseNum
+
+    try:
+        wb.save("bc_output.xlsx")
+    except:
+        print("\nERROR: Data sheet could not be saved!")
+        exit()
+    print("\n\nPhase 1 complete!\n")
+    print("Please open 'bc_output.xlsx' and, in the 'RAW' sheet, sort the course numbers")
+    print("alphabetically before continuing.\n")
+    input("Press the enter key when you are ready to continue.")
+
+    try:
+        wb = load_workbook("bc_output.xlsx")
+    except:
+        print("\nERROR: Input file could not be opened! Ensure that it is correctly named")
+        print("'bc_output.xlsx' and that it is in the same directory as this script before")
+        print("attempting to run it again.")
+        exit()
+    try:
+        ws = wb["RAW"]
+    except:
+        print("\nERROR: Data sheet could not be opened! Ensure that it is correctly named 'RAW'")
+        print("before attempting to run the script again.")
+        exit()
+    
+    ## non-fuzzy comparison of course titles
+    i = 2  # starting index of the new grouping of course titles
+    prevTitle = str(ws.cell(2, 6).value)
+    nextTitle = str(ws.cell(3, 6).value)
+    if prevTitle == None:
+        prevTitle = "-99"
+    if nextTitle == None:
+        nextTitle = "-99"
+    # a dictionary of course titles appearing in the file similar to each other
+    titles = {}
+    if prevTitle != "-99":
+        titles.setdefault(prevTitle, 1)
+    row_index = 2
+    while row_index <= end:
+        if nextTitle != "-99":  # and ws.cell(row_index + 1, 5).value != "-99"
+            # The course title loop adds a check to make sure it is comparing the
+            # same course number for which the course title is associated.
+            print(str(ws.cell(row_index, 5).value) + str(ws.cell(row_index + 1, 5).value))
+            if str(ws.cell(row_index, 5).value) == str(ws.cell(row_index + 1, 5).value):
+                print("In there")
+                if nextTitle in titles:
+                    # if an instance of the title is already in the dictionary,
+                    # update the value
+                    titles[nextTitle] = titles[nextTitle] + 1
+                else:
+                    # otherwise, add the instance of the course title to the
+                    # dictionary
+                    titles.setdefault(nextTitle, 1)
+            else:
+                # find the key with the max value (the on appearing most often in
+                # the data)
+                keys = list(titles.keys())
+                if len(keys) > 1:
+                    topScore = 0
+                    bestTitle = ""
+                    for j in keys:
+                        if titles[j] > topScore and j != "-99":
+                            topScore = titles[j]
+                            bestTitle = j
+                else:
+                    bestTitle = prevTitle
+                # for all elements with similar titles, give them the same title
+                for j in range(i, row_index + 1):
+                    # 7 = the column with the new course titles
+                    print(str(j) + str(ws.cell(j, 6).value))
+                    ws.cell(j, 7).value = str(bestTitle)
+                # update the starting index of the new grouping of course titles
+                i = row_index + 1
+                # reset the titles dictionary
+                titles = {}
+                if nextTitle != "-99":
+                    titles.setdefault(nextTitle, 1)
+        else:
+            # i = row_index + 1
+            pass
+        # update the row index
+        row_index = row_index + 1
+        prevTitle = str(ws.cell(row_index, 6).value)
+        nextTitle = str(ws.cell(row_index + 1, 6).value)
+        if prevTitle == None:
+            prevTitle = "-99"
+        if nextTitle == None:
+            nextTitle = "-99"
+
+    
     # end fuzzy string stuff
     ws.title = "OUTPUT"
     try:

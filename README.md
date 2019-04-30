@@ -47,8 +47,10 @@ It is then important to make sure the Excel file is ready for the script.
    - This will be the "Individual:-Name" and "Individual:-Department/office/
      place of work" columns in the Significant Impact survey. There should be
      new empty columns in columns D and F.
-   - This will be the "BC: Course Number" and "BC: Course Title" columns in the
-     Best Course survey. There should be new empty columns in columns E and G.
+   - This will be the "BC: Course Number", "BC: Course Title", "BC: Prof First
+     Name", and "BC: Prof Last Name" columns in the Best Course survey. There
+     should be new empty columns in columns E and G.
+8. For the Best Course survey, complete the prompted steps after phase 1.
 
 ## Running the Script
 Run the script with Python using the following syntax: `python FuzzyMatch.py`.
@@ -67,7 +69,8 @@ with new values.
 - [x] Provide users with an initial informational launch and the option to
   select the survey mode ("Significant Impact" or "Best Course")
 - [x] Implement the algorithm for processing the "Significant Impact" survey
-- [ ] Implement the algorithm for processing the "Best Course" survey
+- [x] Implement the algorithm for processing the "Best Course" survey
+- [ ] Finalize the implementation of the "Best Course" survey's algorithm
 - [x] Provide output acknowledging the completion of the script and outline the
   expected output
 - [ ] Debug and adjust fuzzy string thresholds
@@ -81,3 +84,11 @@ the same as instances of the same subject, which would in theory lead to the
 algorithm being better at picking a value for that category. It would also be a
 good idea to modularize the code more than it is currently since the steps in
 each of the sections of the program are not overtly dissimilar.
+
+Further, there are some flaws with the current implementation of the Best Course
+survey. The course number needs to always have four digits, so leading zeros
+must be inserted. The course title processing is mostly functional, but -99
+course numbers are all given the same most common course title, which is not
+intended. There also seems to be a bug if a single entry of a course is followed
+by courses with -99 course titles. There is also currently no implementation to
+match the names of the professors of the courses.
