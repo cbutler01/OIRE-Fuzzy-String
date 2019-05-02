@@ -7,7 +7,7 @@ Courses surveys.
 Written by:  James Garijo-Garde | 
         for: The Tufts University Office of Institutional Research and
              Evaluation (OIRE) |
-        in:  April, 2019
+        in:  April and May, 2019
 
 ## Purpose of this Program
 This program is a command line script that automates a survey processing step
@@ -50,7 +50,8 @@ It is then important to make sure the Excel file is ready for the script.
    - This will be the "BC: Course Number", "BC: Course Title", "BC: Prof First
      Name", and "BC: Prof Last Name" columns in the Best Course survey. There
      should be new empty columns in columns E and G.
-8. For the Best Course survey, complete the prompted steps after phase 1.
+8. The Best Course survey is split into two phases. Complete the prompted steps
+   after phase 1 in order to proceed with phase 2.
 
 ## Running the Script
 Run the script with Python using the following syntax: `python FuzzyMatch.py`.
@@ -70,12 +71,12 @@ with new values.
   select the survey mode ("Significant Impact" or "Best Course")
 - [x] Implement the algorithm for processing the "Significant Impact" survey
 - [x] Implement the algorithm for processing the "Best Course" survey
-- [ ] Finalize the implementation of the "Best Course" survey's algorithm
+- [ ] Add matching of professor names in the "Best Course" survey
 - [x] Provide output acknowledging the completion of the script and outline the
   expected output
 - [ ] Debug and adjust fuzzy string thresholds
 
-## Next Steps
+## Potential Next Steps
 This algorithm needs to be debugged, and edge cases must be considered! The
 current implementation does not use fuzzy string recognition for the department
 category in the Significant Impact survey. It might be a good idea to somehow
@@ -85,10 +86,5 @@ algorithm being better at picking a value for that category. It would also be a
 good idea to modularize the code more than it is currently since the steps in
 each of the sections of the program are not overtly dissimilar.
 
-Further, there are some flaws with the current implementation of the Best Course
-survey. The course number needs to always have four digits, so leading zeros
-must be inserted. The course title processing is mostly functional, but -99
-course numbers are all given the same most common course title, which is not
-intended. There also seems to be a bug if a single entry of a course is followed
-by courses with -99 course titles. There is also currently no implementation to
-match the names of the professors of the courses.
+Further, there is currently no implementation to match the names of the
+professors of the courses in the Best Course survey.

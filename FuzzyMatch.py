@@ -7,7 +7,7 @@
     classes students mention as favorites during their time at Tufts.
 
     Written by:  James Garijo-Garde
-            on:  4/25/2019
+            on:  5/2/2019
             for: The Tufts University Office of Institutional Research &
                  Evaluation (OIRE)
 """
@@ -33,12 +33,12 @@ def launch():
     loop = True
     while loop == True:
         if mode == "si":
-            print("### Significant Impact ###")
+            print("\n### Significant Impact ###")
             loop = False
             # Launches the significant impact survey processor
             significantImpact()
         elif mode == "bc":
-            print("### Best Course ###")
+            print("\n### Best Course ###")
             loop = False
             # Launches the best course survey processor
             bestCourse()
@@ -77,7 +77,7 @@ def significantImpact():
         names.setdefault(prevName, 1)
     row_index = 2
     while row_index <= end:
-        if nextName != "-99":
+        if nextName != "-99" or prevName != "-99":
             # 90 = threshold of minimum allowable similarity after passing it
             # into the FuzzyWuzzy token sort algorithm.
             if fuzz.token_sort_ratio(prevName, nextName) >= 90:  # TEST THIS THRESHOLD!
@@ -210,19 +210,23 @@ def bestCourse():
             # capitalize all the letters in the course number
             courseNum = courseNum.upper()
             for j in range(len(courseNum)):
-                if courseNum[j].isalnum() == False:
+                if courseNum[j].isalnum() == False and courseNum[j + 1].isdigit():
                     # if a character in the course number is neither a letter
                     # nor a number, change it to a space
                     courseNum = courseNum[:j] + ' ' + courseNum[(j + 1):]
-                elif courseNum[j] == '0':
-                    # remove all leading zeros from the course number
-                    k = copy.deepcopy(j)
-                    while courseNum[k + 1] == '0':
-                        k = k + 1
-                    courseNum = courseNum[:j] + courseNum[(k + 1):]
                 elif courseNum[j].isdigit() and j == 0:
                     # if the course number does not have the subject code at the
                     # beginning, get the subject code from the subject column
+                    num = ""
+                    extra = False
+                    for k in range(len(courseNum)):
+                        if courseNum[k].isdigit():
+                            num = num + courseNum[k]
+                        elif k < len(courseNum) - 1:
+                            extra = True
+                            break
+                    while len(num) < 4:
+                        num = "0" + num
                     subject = str(ws.cell(i, 3).value)
                     # if the subject field is empty, don't do anything
                     if subject != "-99":
@@ -234,15 +238,37 @@ def bestCourse():
                                 start = k + 1
                                 break
                         subject = subject[start:(len(subject) - 1)] + ' '
-                        courseNum = subject + courseNum
-                        break
-                elif courseNum[j].isdigit() and courseNum[j-1].isalpha():
+                    newCourseNum = copy.deepcopy(courseNum)
                     # insert a space if the course number goes straight from
                     # letters to numbers
-                    courseNum = courseNum[:j] + ' ' + courseNum[j:]
+                    newCourseNum = subject + num
+                    if extra:
+                        newCourseNum = newCourseNum + courseNum[(k):]
+                    courseNum = newCourseNum
+                    break
                 elif courseNum[j].isdigit():
-                    # if the jth element in the course number is a digit,
-                    # processing is complete
+                    # make sure the appropriate number of leading zeros are in
+                    # the course number
+                    num = ""
+                    extra = False
+                    for k in range(j, len(courseNum)):
+                        if courseNum[k].isdigit():
+                            num = num + courseNum[k]
+                        elif k < len(courseNum) - 1:
+                            extra = True
+                            break
+                    while len(num) < 4:
+                        num = "0" + num
+                    newCourseNum = copy.deepcopy(courseNum)
+                    # insert a space if the course number goes straight from
+                    # letters to numbers
+                    if courseNum[j-1].isalpha():
+                        newCourseNum = courseNum[:j] + " " + num
+                    else:
+                        newCourseNum = courseNum[:j] + num
+                    if extra:
+                        newCourseNum = newCourseNum + courseNum[(k):]
+                    courseNum = newCourseNum
                     break
         # 5 = the column with the new course numbers
         ws.cell(i, 5).value = courseNum
@@ -285,12 +311,16 @@ def bestCourse():
         titles.setdefault(prevTitle, 1)
     row_index = 2
     while row_index <= end:
-        if nextTitle != "-99":  # and ws.cell(row_index + 1, 5).value != "-99"
+        if str(ws.cell(row_index, 5).value) == "-99":
+            # if the course number is -99, put the user-entered course title in
+            # the column of new course titles.
+            ws.cell(row_index, 7).value = ws.cell(row_index, 6).value
+            # update the starting index of the new grouping of course titles
+            i = row_index + 1
+        elif nextTitle != "-99" or prevTitle != "-99":  # and ws.cell(row_index + 1, 5).value != "-99"
             # The course title loop adds a check to make sure it is comparing the
             # same course number for which the course title is associated.
-            print(str(ws.cell(row_index, 5).value) + str(ws.cell(row_index + 1, 5).value))
             if str(ws.cell(row_index, 5).value) == str(ws.cell(row_index + 1, 5).value):
-                print("In there")
                 if nextTitle in titles:
                     # if an instance of the title is already in the dictionary,
                     # update the value
@@ -315,7 +345,6 @@ def bestCourse():
                 # for all elements with similar titles, give them the same title
                 for j in range(i, row_index + 1):
                     # 7 = the column with the new course titles
-                    print(str(j) + str(ws.cell(j, 6).value))
                     ws.cell(j, 7).value = str(bestTitle)
                 # update the starting index of the new grouping of course titles
                 i = row_index + 1
@@ -323,9 +352,6 @@ def bestCourse():
                 titles = {}
                 if nextTitle != "-99":
                     titles.setdefault(nextTitle, 1)
-        else:
-            # i = row_index + 1
-            pass
         # update the row index
         row_index = row_index + 1
         prevTitle = str(ws.cell(row_index, 6).value)
