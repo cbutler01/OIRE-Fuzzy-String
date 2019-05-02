@@ -24,7 +24,6 @@ classes students mention as favorites during their time at Tufts.
   select the survey mode ("Significant Impact" or "Best Course")
 - [x] Implement the algorithm for processing the "Significant Impact" survey
 - [x] Implement the algorithm for processing the "Best Course" survey
-- [ ] Add matching of professor names in the "Best Course" survey
 - [x] Provide output acknowledging the completion of the script and outline the
   expected output
 - [ ] Debug and adjust fuzzy string thresholds
@@ -79,15 +78,12 @@ processed in the same directory as the script and the input files. Regardless of
 the file name, the file should contain a sheet entitled "OUTPUT" in which the
 previously empty columns inserted by the user are filled with new values.
 
-## Potential Next Steps
-This algorithm needs to be debugged, and edge cases must be considered! The
-current implementation does not use fuzzy string recognition for the department
-category in the Significant Impact survey. It might be a good idea to somehow
-include that as a means of including similar subject names that are not exactly
-the same as instances of the same subject, which would in theory lead to the
-algorithm being better at picking a value for that category. It would also be a
-good idea to modularize the code more than it is currently since the steps in
-each of the sections of the program are not overtly dissimilar.
-
-Further, there is currently no implementation to match the names of the
+## Potential Future Steps
+This algorithm needs to be debugged more thoroughly, and edge cases must be
+considered! The current implementation does not use fuzzy string recognition for
+the department category in the Significant Impact survey. It might be a good
+idea to somehow include that as a means of including similar subject names that
+are not exactly the same as instances of the same subject, which would in theory
+lead to the algorithm being better at picking a value for that category. There
+is also currently no implementation of fuzzy string matching of names of the
 professors of the courses in the Best Course survey.
