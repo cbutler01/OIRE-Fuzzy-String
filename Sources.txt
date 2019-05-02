@@ -1,0 +1,39 @@
+Sources:
+========
+
+Fuzzy String Matching:
+
+https://en.wikipedia.org/wiki/Approximate_string_matching
+
+https://www.datacamp.com/community/tutorials/fuzzy-string-python
+
+https://github.com/susanli2016/NLP-with-Python/blob/master/Fuzzy%20String%20Matching.ipynb
+
+https://github.com/seatgeek/fuzzywuzzy
+
+https://github.com/WantedTechnologies/xpresso/wiki/Approximate-string-comparison-and-pattern-matching-in-Java
+
+http://rosettacode.org/wiki/Levenshtein_distance
+
+
+Excel/csv Reading/Writing:
+
+https://openpyxl.readthedocs.io/en/stable
+
+https://www.datacamp.com/community/tutorials/python-excel-tutorial
+
+https://stackoverflow.com/questions/26957831/edit-existing-excel-workbooks-and-sheets-with-xlrd-and-xlwt
+
+https://docs.python.org/3/library/csv.html
+
+http://www.python-excel.org
+
+https://en.wikipedia.org/wiki/Pandas_(software)
+
+https://automatetheboringstuff.com/chapter12
+
+Git and Markdown:
+
+https://help.github.com/en/articles/basic-writing-and-formatting-syntax
+
+https://help.github.com/en/articles/ignoring-files
