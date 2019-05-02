@@ -445,18 +445,30 @@ def bestCourse():
         if nextTitle == None:
             nextTitle = "-99"
 
-    ## Add course number and course title to rows with incomplete information
     for i in range(2, end + 1):
-        if ws.cell(i, 5).value == "-99":
+        # add course number and course title to rows with incomplete information
+        if str(ws.cell(i, 5).value) == "-99":
             if ws.cell(i, 7).value == ws.cell(i - 1, 7).value:
                 ws.cell(i, 5).value = ws.cell(i - 1, 5).value
             elif ws.cell(i, 7).value == ws.cell(i + 1, 7).value:
                 ws.cell(i, 5).value = ws.cell(i + 1, 5).value 
-        elif ws.cell(i, 7).value == "-99":
+        elif str(ws.cell(i, 7).value) == "-99":
             if ws.cell(i, 5).value == ws.cell(i - 1, 5).value:
                 ws.cell(i, 7).value = ws.cell(i - 1, 7).value
             elif ws.cell(i, 5).value == ws.cell(i + 1, 5).value:
                 ws.cell(i, 7).value = ws.cell(i + 1, 7).value
+        # add professor first name and last name to rows with incomplete
+        # information
+        if str(ws.cell(i, 8).value) == "-99":
+            if ws.cell(i, 10).value == ws.cell(i - 1, 10).value:
+                ws.cell(i, 8).value = ws.cell(i - 1, 8).value
+            elif ws.cell(i, 10).value == ws.cell(i + 1, 10).value:
+                ws.cell(i, 8).value = ws.cell(i + 1, 8).value 
+        elif str(ws.cell(i, 10).value) == "-99":
+            if ws.cell(i, 8).value == ws.cell(i - 1, 8).value:
+                ws.cell(i, 10).value = ws.cell(i - 1, 10).value
+            elif ws.cell(i, 8).value == ws.cell(i + 1, 8).value:
+                ws.cell(i, 10).value = ws.cell(i + 1, 10).value
 
     ws.title = "OUTPUT"
     try:
@@ -467,7 +479,7 @@ def bestCourse():
     print("\n\nSurvey fuzzy string processing complete! File saved as 'bc_output.xlsx\n")
 
 
-#########  MAIN  #########
+################  MAIN  #################
 if __name__ == "__main__":
     launch()
     input("Press the enter key to exit.")
