@@ -279,8 +279,8 @@ def bestCourse():
         print("\nERROR: Data sheet could not be saved!")
         exit()
     print("\n\nPhase 1 complete!\n")
-    print("Please open 'bc_output.xlsx' and, in the 'RAW' sheet, sort the course numbers")
-    print("alphabetically before continuing.\n")
+    print("Please open 'bc_output.xlsx' and, in the 'RAW' sheet, sort the new course")
+    print("numbers alphabetically before continuing.\n")
     input("Press the enter key when you are ready to continue.")
 
     try:
@@ -361,8 +361,103 @@ def bestCourse():
         if nextTitle == None:
             nextTitle = "-99"
 
-    
-    # end fuzzy string stuff
+    try:
+        wb.save("bc_output.xlsx")
+    except:
+        print("\nERROR: Data sheet could not be saved!")
+        exit()
+    print("\n\nPhase 2 complete!\n")
+    print("Please open 'bc_output.xlsx' and, in the 'RAW' sheet, sort the new course titles")
+    print("alphabetically before continuing.\n")
+    input("Press the enter key when you are ready to continue.")
+
+    try:
+        wb = load_workbook("bc_output.xlsx")
+    except:
+        print("\nERROR: Input file could not be opened! Ensure that it is correctly named")
+        print("'bc_output.xlsx' and that it is in the same directory as this script before")
+        print("attempting to run it again.")
+        exit()
+    try:
+        ws = wb["RAW"]
+    except:
+        print("\nERROR: Data sheet could not be opened! Ensure that it is correctly named 'RAW'")
+        print("before attempting to run the script again.")
+        exit()
+
+    ## fuzzy comparison of course titles
+    i = 2  # starting index of the new grouping of titles
+    # 6 = the column with the titles
+    prevTitle = str(ws.cell(2, 6).value)
+    nextTitle = str(ws.cell(3, 6).value)
+    if prevTitle == None:
+        prevTitle = "-99"
+    if nextTitle == None:
+        nextTitle = "-99"
+    # a dictionary of titles appearing in the file similar to each other
+    titles = {}
+    if prevTitle != "-99":
+        titles.setdefault(prevTitle, 1)
+    row_index = 2
+    while row_index <= end:
+        if nextTitle != "-99" or prevTitle != "-99":
+            # 90 = threshold of minimum allowable similarity after passing it
+            # into the FuzzyWuzzy token sort algorithm.
+            if fuzz.token_sort_ratio(prevTitle, nextTitle) >= 90:  # TEST THIS THRESHOLD!
+                if nextTitle in titles:
+                    # if an instance of the title is already in the dictionary,
+                    # update the value
+                    titles[nextTitle] = titles[nextTitle] + 1
+                else:
+                    # otherwise, add the instance of the title to the dictionary
+                    titles.setdefault(nextTitle, 1)
+            else:
+                # find the key with the max value (the one appearing most often
+                # in the data)
+                keys = list(titles.keys())
+                if len(keys) > 1:
+                    topScore = 0
+                    bestTitle = ""
+                    for j in keys:
+                        if titles[j] > topScore:
+                            topScore = titles[j]
+                            bestTitle = j
+                else:
+                    bestTitle = prevTitle
+                # for all elements with similar titles, give them the same title
+                for j in range(i, row_index + 1):
+                    # 4 = the column with the new title
+                    ws.cell(j, 7).value = bestTitle
+                # update the starting index of the new grouping of names
+                i = row_index + 1
+                # reset the titles dictionary
+                titles = {}
+                if prevTitle != "-99":
+                    titles.setdefault(prevTitle, 1)
+        else:
+            i = row_index + 1
+        # update the row index
+        row_index = row_index + 1
+        prevTitle = str(ws.cell(row_index, 6).value)
+        nextTitle = str(ws.cell(row_index + 1, 6).value)
+        if prevTitle == None:
+            prevTitle = "-99"
+        if nextTitle == None:
+            nextTitle = "-99"
+
+    ## Add course number and course title to rows with incomplete information
+    for i in range(2, end + 1):
+        if ws.cell(i, 5).value == "-99":
+            if ws.cell(i, 7).value == ws.cell(i - 1, 7).value:
+                ws.cell(i, 5).value = ws.cell(i - 1, 5).value
+            elif ws.cell(i, 7).value == ws.cell(i + 1, 7).value:
+                ws.cell(i, 5).value = ws.cell(i + 1, 5).value 
+        elif ws.cell(i, 7).value == "-99":
+            if ws.cell(i, 5).value == ws.cell(i - 1, 5).value:
+                ws.cell(i, 7).value = ws.cell(i - 1, 7).value
+            elif ws.cell(i, 5).value == ws.cell(i + 1, 5).value:
+                ws.cell(i, 7).value = ws.cell(i + 1, 7).value
+
     ws.title = "OUTPUT"
     try:
         wb.save("bc_output.xlsx")

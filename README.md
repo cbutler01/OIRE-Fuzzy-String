@@ -62,8 +62,9 @@ It is then important to make sure the Excel file is ready for the script.
    - This will be the "BC: Course Number", "BC: Course Title", "BC: Prof First
      Name", and "BC: Prof Last Name" columns in the Best Course survey. There
      should be new empty columns in columns E and G.
-8. The Best Course survey is split into two phases. Complete the prompted steps
-   after phase 1 in order to proceed with phase 2.
+8. The Best Course survey is split into three phases. Complete the prompted
+   steps after phase 1 in order to proceed with phase 2 and the steps after
+   phase 2 to proceed with phase 3.
 
 ## Running the Script
 * Run the script by double-clicking the script file in your file explorer.
