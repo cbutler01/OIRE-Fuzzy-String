@@ -17,6 +17,18 @@ This program processes the names and departments of individuals mentioned as
 having a significant impact on students and the course number and title of
 classes students mention as favorites during their time at Tufts.
 
+## Steps to Completion
+- [x] Outline the steps that must be taken before the Excel file is read by the
+  script
+- [x] Provide users with an initial informational launch and the option to
+  select the survey mode ("Significant Impact" or "Best Course")
+- [x] Implement the algorithm for processing the "Significant Impact" survey
+- [x] Implement the algorithm for processing the "Best Course" survey
+- [ ] Add matching of professor names in the "Best Course" survey
+- [x] Provide output acknowledging the completion of the script and outline the
+  expected output
+- [ ] Debug and adjust fuzzy string thresholds
+
 ## Steps before Running
 Before running this program, make sure you have
 [Python 3](https://www.python.org/downloads) and
@@ -54,27 +66,17 @@ It is then important to make sure the Excel file is ready for the script.
    after phase 1 in order to proceed with phase 2.
 
 ## Running the Script
-Run the script with Python using the following syntax: `python FuzzyMatch.py`.
-Note that on some systems you may need to replace `python` with `python3`.
+* Run the script by double-clicking the script file in your file explorer.
+* Run the script with Python in a Bash command line using the following syntax:
+  `python FuzzyMatch.py`. Note that on some systems you may need to replace
+  `python` with `python3`.
 
 ## Expected Output
 When the script has finished running, you should expect to see a file named
-either `si_output.xlsx` or `bc_output.xlsx`, depending on which survey you
-processed. Regardless of the file name, the file should contain a sheet entitled
-"OUTPUT" in which the previously empty columns inserted by the user are filled
-with new values.
-
-## Steps to Completion
-- [x] Outline the steps that must be taken before the Excel file is read by the
-  script
-- [x] Provide users with an initial informational launch and the option to
-  select the survey mode ("Significant Impact" or "Best Course")
-- [x] Implement the algorithm for processing the "Significant Impact" survey
-- [x] Implement the algorithm for processing the "Best Course" survey
-- [ ] Add matching of professor names in the "Best Course" survey
-- [x] Provide output acknowledging the completion of the script and outline the
-  expected output
-- [ ] Debug and adjust fuzzy string thresholds
+either `si_output.xlsx` or `bc_output.xlsx` depending on which survey you
+processed in the same directory as the script and the input files. Regardless of
+the file name, the file should contain a sheet entitled "OUTPUT" in which the
+previously empty columns inserted by the user are filled with new values.
 
 ## Potential Next Steps
 This algorithm needs to be debugged, and edge cases must be considered! The
