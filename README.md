@@ -21,8 +21,8 @@ classes students mention as favorites during their time at Tufts.
 Before running this program, make sure you have
 [Python 3](https://www.python.org/downloads) and
 [pip](https://pypi.org/project/pip) installed on your computer, as well as the
-[FuzzyWuzzy](https://github.com/seatgeek/fuzzywuzzy) and
-[openpyxl](https://openpyxl.readthedocs.io/en/stable) Python packages.
+[FuzzyWuzzy](https://chairnerd.seatgeek.com/fuzzywuzzy-fuzzy-string-matching-in-python)
+and [openpyxl](https://openpyxl.readthedocs.io/en/stable) Python packages.
 
 It is then important to make sure the Excel file is ready for the script.
 1. Ensure that the survey's Excel file is in the same directory as the script.
